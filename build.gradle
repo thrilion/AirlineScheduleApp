@@ -16,9 +16,11 @@ buildscript {
 }
 
 ext {
-    retrofit_version = '2.5.0'
-    dagger2_version = '2.21'
     support_version = '27.1.1'
+    retrofit_version = '2.5.0'
+    rxjava2_version = '2.1.8'
+    rxandroid_version = '2.0.1'
+    dagger2_version = '2.21'
 }
 
 allprojects {
