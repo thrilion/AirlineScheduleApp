@@ -9,7 +9,7 @@ object Entities {
 
     data class Schedule(
         @field:Json(name = "TotalJourney") val totalJourney: TotalJourney,
-        @field:Json(name = "Flight") val flight: List<Flight>
+        @field:Json(name = "Flight") val flight: Flight
     )
 
     data class TotalJourney(@field:Json(name = "Duration") val duration: String)
