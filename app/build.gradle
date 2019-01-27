@@ -23,12 +23,16 @@ android {
             buildConfigField "String", "BASE_URL", "\"https://api.lufthansa.com/v1/\""
         }
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:support-v4:$support_version"
 
     // ui
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -36,8 +40,8 @@ dependencies {
     implementation "com.android.support:cardview-v7:$support_version"
 
     // okhttp3 + retrofit + moshi
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
@@ -53,6 +57,9 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger2_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger2_version"
+
+    // Data binding
+    kapt "com.android.databinding:compiler:$databinding_version"
 
     // testing
     testImplementation 'junit:junit:4.12'
