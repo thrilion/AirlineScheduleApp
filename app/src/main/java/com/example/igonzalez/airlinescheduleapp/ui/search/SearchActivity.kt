@@ -21,5 +21,8 @@ class SearchActivity : BaseActivity<SearchPresenter>(), SearchView {
         return SearchPresenter(this)
     }
 
-    private fun beginSearch() {}
+    private fun beginSearch() {
+        val intent = ScheduleActivity.newIntent(this, "ZRH","FRA","2019-01-23")
+        startActivity(intent)
+    }
 }

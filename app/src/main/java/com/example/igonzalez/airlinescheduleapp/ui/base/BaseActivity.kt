@@ -17,10 +17,4 @@ abstract class BaseActivity<P : BasePresenter<BaseView>> : AppCompatActivity(), 
     }
 
     protected abstract fun setPresenter(): P
-
-    abstract fun showLoading()
-
-    abstract fun hideLoading()
-
-    abstract fun showError(error: String)
 }
