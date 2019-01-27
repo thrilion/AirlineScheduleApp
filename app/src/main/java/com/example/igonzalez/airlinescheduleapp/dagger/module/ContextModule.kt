@@ -7,10 +7,10 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ContextModule {
+class ContextModule(private var baseView: BaseView) {
 
     @Provides
-    internal fun provideContext(baseView: BaseView): Context {
+    fun provideContext(): Context {
         return baseView.getContext()
     }
 
