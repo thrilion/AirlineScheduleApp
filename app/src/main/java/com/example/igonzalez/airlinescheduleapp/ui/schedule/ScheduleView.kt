@@ -7,8 +7,6 @@ interface ScheduleView : BaseView {
 
     fun showSchedules(schedules: List<Entities.Schedule>)
 
-    fun printDuration(duration: String)
-
     fun showLoading()
 
     fun hideLoading()

@@ -16,11 +16,13 @@ class SchedulePresenter(scheduleView: ScheduleView) : BasePresenter<ScheduleView
     private var subscription: Disposable? = null
 
     fun makeScheduleRequest(origin: String, destination: String, fromDateTime: String) {
+        view.showLoading()
         subscription = airlineScheduleApi.getAirlineSchedules(origin, destination, fromDateTime)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnTerminate { view.hideLoading() }
             .subscribe(
-                { result -> view.printDuration(result.scheduleResource.schedules[0].totalJourney.duration)},
+                { result -> view.showSchedules(result.scheduleResource.schedules)},
                 { error -> view.showError(error.message) }
             )
     }

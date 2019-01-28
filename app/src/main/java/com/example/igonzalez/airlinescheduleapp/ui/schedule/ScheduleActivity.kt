@@ -2,14 +2,21 @@ package com.example.igonzalez.airlinescheduleapp.ui.schedule
 
 import android.content.Context
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import android.widget.Toast
 import com.example.igonzalez.airlinescheduleapp.R
+import com.example.igonzalez.airlinescheduleapp.databinding.ActivityScheduleBinding
 import com.example.igonzalez.airlinescheduleapp.model.Entities
 import com.example.igonzalez.airlinescheduleapp.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_schedule.*
 
 class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
+
+    private lateinit var binding: ActivityScheduleBinding
+    private val scheduleAdapter = ScheduleAdapter(this)
 
     companion object {
         private const val INTENT_ORIGIN = "origin"
@@ -27,7 +34,12 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_schedule)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule)
+        binding.adapter = scheduleAdapter
+        binding.layoutManager = LinearLayoutManager(this)
+        binding.dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+
 
         val origin = intent.getStringExtra(INTENT_ORIGIN)
             ?: throw IllegalStateException("field $INTENT_ORIGIN missing in Intent")
@@ -44,19 +56,15 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
     }
 
     override fun showSchedules(schedules: List<Entities.Schedule>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun printDuration(duration: String) {
-        txt_search_result.text = duration
+        scheduleAdapter.updateSchedules(schedules)
     }
 
     override fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        binding.progressVisibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        binding.progressVisibility = View.GONE
     }
 
     override fun showError(error: String?) {
