@@ -71,4 +71,8 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         Toast.makeText(this, error, Toast.LENGTH_LONG).show()
     }
 
+    override fun onPause() {
+        super.onPause()
+        presenter.disposeSubscription()
+    }
 }

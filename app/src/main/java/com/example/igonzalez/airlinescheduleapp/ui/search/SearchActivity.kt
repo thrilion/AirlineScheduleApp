@@ -25,4 +25,9 @@ class SearchActivity : BaseActivity<SearchPresenter>(), SearchView {
         val intent = ScheduleActivity.newIntent(this, "ZRH","FRA","2019-01-23")
         startActivity(intent)
     }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.disposeSubscription()
+    }
 }

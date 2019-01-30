@@ -27,7 +27,7 @@ class SchedulePresenter(scheduleView: ScheduleView) : BasePresenter<ScheduleView
             )
     }
 
-    override fun onViewDestroyed() {
+    fun disposeSubscription() {
         subscription?.dispose()
     }
 }

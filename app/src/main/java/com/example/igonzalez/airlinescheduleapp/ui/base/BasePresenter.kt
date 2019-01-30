@@ -16,10 +16,6 @@ abstract class BasePresenter<out V : BaseView>(protected val view: V) {
         inject()
     }
 
-    open fun onViewCreated(){}
-
-    open fun onViewDestroyed(){}
-
     private fun inject() {
         when (this) {
             is SchedulePresenter -> component.inject(this)
