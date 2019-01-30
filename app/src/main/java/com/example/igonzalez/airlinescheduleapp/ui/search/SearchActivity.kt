@@ -1,5 +1,6 @@
 package com.example.igonzalez.airlinescheduleapp.ui.search
 
+import android.content.Context
 import android.os.Bundle
 import com.example.igonzalez.airlinescheduleapp.R
 import com.example.igonzalez.airlinescheduleapp.ui.base.BaseActivity
@@ -12,6 +13,8 @@ class SearchActivity : BaseActivity<SearchPresenter>(), SearchView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        presenter.makeAuthTokenRequest()
+
         btn_search.setOnClickListener {
             beginSearch()
         }
@@ -19,6 +22,15 @@ class SearchActivity : BaseActivity<SearchPresenter>(), SearchView {
 
     override fun setPresenter(): SearchPresenter {
         return SearchPresenter(this)
+    }
+
+    override fun saveAuthToken(accessToken: String) {
+        val sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString("API_ACCESS_TOKEN", "Bearer $accessToken")
+            apply()
+        }
     }
 
     private fun beginSearch() {

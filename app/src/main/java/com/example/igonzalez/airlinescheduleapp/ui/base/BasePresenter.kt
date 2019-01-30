@@ -18,6 +18,7 @@ abstract class BasePresenter<out V : BaseView>(protected val view: V) {
 
     private fun inject() {
         when (this) {
+            is SearchPresenter -> component.inject(this)
             is SchedulePresenter -> component.inject(this)
         }
     }

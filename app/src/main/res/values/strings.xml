@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AirlineScheduleApp</string>
+    <string name="preference_file_key">sharedPreferenceFileKey</string>
 </resources>

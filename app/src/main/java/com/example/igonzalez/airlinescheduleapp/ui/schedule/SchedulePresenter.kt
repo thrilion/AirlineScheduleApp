@@ -1,6 +1,5 @@
 package com.example.igonzalez.airlinescheduleapp.ui.schedule
 
-import android.util.Log
 import com.example.igonzalez.airlinescheduleapp.ui.base.BasePresenter
 import com.example.igonzalez.airlinescheduleapp.api.AirlineSchedulesApi
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,14 +14,14 @@ class SchedulePresenter(scheduleView: ScheduleView) : BasePresenter<ScheduleView
 
     private var subscription: Disposable? = null
 
-    fun makeScheduleRequest(origin: String, destination: String, fromDateTime: String) {
+    fun makeScheduleRequest(token: String, origin: String, destination: String, fromDateTime: String) {
         view.showLoading()
-        subscription = airlineScheduleApi.getAirlineSchedules(origin, destination, fromDateTime)
+        subscription = airlineScheduleApi.getAirlineSchedules(token, origin, destination, fromDateTime)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnTerminate { view.hideLoading() }
             .subscribe(
-                { result -> view.showSchedules(result.scheduleResource.schedules)},
+                { result -> view.showSchedules(result.scheduleResource.schedules) },
                 { error -> view.showError(error.message) }
             )
     }

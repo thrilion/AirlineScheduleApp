@@ -39,4 +39,6 @@ object Entities {
     data class Details(@field:Json(name = "Stops") val stops: Stops)
 
     data class Stops(@field:Json(name = "StopQuantity") val stopQuantity: String)
+
+    data class TokenResponse(@field:Json(name = "access_token") val accessToken: String)
 }

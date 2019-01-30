@@ -40,7 +40,6 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         binding.layoutManager = LinearLayoutManager(this)
         binding.dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
 
-
         val origin = intent.getStringExtra(INTENT_ORIGIN)
             ?: throw IllegalStateException("field $INTENT_ORIGIN missing in Intent")
         val destination = intent.getStringExtra(INTENT_DESTINATION)
@@ -48,7 +47,11 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         val fromDateTime = intent.getStringExtra(INTENT_FROM_DATE_TIME)
             ?: throw IllegalStateException("field $INTENT_FROM_DATE_TIME missing in Intent")
 
-        presenter.makeScheduleRequest(origin, destination, fromDateTime)
+        val sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE) ?: return
+        val token = sharedPref.getString("API_ACCESS_TOKEN", "")
+
+        presenter.makeScheduleRequest(token, origin, destination, fromDateTime)
     }
 
     override fun setPresenter(): SchedulePresenter {
