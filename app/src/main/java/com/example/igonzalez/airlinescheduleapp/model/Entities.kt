@@ -3,6 +3,11 @@ package com.example.igonzalez.airlinescheduleapp.model
 import com.squareup.moshi.Json
 
 object Entities {
+
+    /*
+    * SCHEDULE REQUEST
+    */
+
     data class ScheduleRequestResponse(@field:Json(name = "ScheduleResource") val scheduleResource: ScheduleResource)
 
     data class ScheduleResource(@field:Json(name = "Schedule") val schedules: List<Schedule>)
@@ -39,6 +44,28 @@ object Entities {
     data class Details(@field:Json(name = "Stops") val stops: Stops)
 
     data class Stops(@field:Json(name = "StopQuantity") val stopQuantity: String)
+
+    /*
+    * AIRPORT REQUEST
+    */
+
+    data class AirportResourceResponse(@field:Json(name = "AirportResource") val airportResource: AirportResource)
+
+    data class AirportResource(@field:Json(name = "Airports") val airports: Airports)
+
+    data class Airports(@field:Json(name = "Airport") val airport: Airport)
+
+    data class Airport(@field:Json(name = "Position") val position: Position)
+
+    data class Position(@field:Json(name = "Coordinate") val coordinate: Coordinate)
+
+    data class Coordinate(@field:Json(name = "Latitude") val latitude: Double,
+                          @field:Json(name = "Longitude") val longitude: Double
+    )
+
+    /*
+    * TOKEN REQUEST
+    */
 
     data class TokenResponse(@field:Json(name = "access_token") val accessToken: String)
 }
