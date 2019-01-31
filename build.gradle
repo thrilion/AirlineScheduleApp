@@ -22,7 +22,7 @@ ext {
     rxjava2_version = '2.1.8'
     rxandroid_version = '2.0.2'
     dagger2_version = '2.21'
-    databinding_version = '3.1.4'
+    google_maps_version = '16.0.0'
 }
 
 allprojects {

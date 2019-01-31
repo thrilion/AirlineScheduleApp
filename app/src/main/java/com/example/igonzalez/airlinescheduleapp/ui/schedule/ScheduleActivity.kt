@@ -11,11 +11,12 @@ import com.example.igonzalez.airlinescheduleapp.R
 import com.example.igonzalez.airlinescheduleapp.databinding.ActivityScheduleBinding
 import com.example.igonzalez.airlinescheduleapp.model.Entities
 import com.example.igonzalez.airlinescheduleapp.ui.base.BaseActivity
+import com.example.igonzalez.airlinescheduleapp.ui.map.MapActivity
 
 class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
 
     private lateinit var binding: ActivityScheduleBinding
-    private val scheduleAdapter = ScheduleAdapter(this)
+    private val scheduleAdapter = ScheduleAdapter(this) { schedule: Entities.Schedule -> scheduleItemClicked(schedule) }
 
     companion object {
         private const val INTENT_ORIGIN = "origin"
@@ -46,7 +47,8 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
             ?: throw IllegalStateException("field $INTENT_FROM_DATE_TIME missing in Intent")
 
         val sharedPref = this.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE) ?: return
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        ) ?: return
         val token = sharedPref.getString("API_ACCESS_TOKEN", "")
 
         presenter.makeScheduleRequest(token, origin, destination, fromDateTime)
@@ -58,6 +60,15 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
 
     override fun showSchedules(schedules: List<Entities.Schedule>) {
         scheduleAdapter.updateSchedules(schedules)
+    }
+
+    private fun scheduleItemClicked(schedule: Entities.Schedule) {
+        val intent = MapActivity.newIntent(
+            this,
+            schedule.flight.departure.airportCode,
+            schedule.flight.departure.airportCode
+        )
+        startActivity(intent)
     }
 
     override fun showLoading() {

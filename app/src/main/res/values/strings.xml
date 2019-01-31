@@ -5,4 +5,5 @@
     <string name="destination">Destination</string>
     <string name="search">Search Flights</string>
     <string name="date">Date</string>
+    <string name="title_activity_map">Map</string>
 </resources>

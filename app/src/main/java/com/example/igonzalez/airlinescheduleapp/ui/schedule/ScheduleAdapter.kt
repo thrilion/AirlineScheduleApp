@@ -9,13 +9,15 @@ import com.example.igonzalez.airlinescheduleapp.R
 import com.example.igonzalez.airlinescheduleapp.databinding.ItemScheduleBinding
 import com.example.igonzalez.airlinescheduleapp.model.Entities
 
-class ScheduleAdapter(private val context: Context) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
+class ScheduleAdapter(private val context: Context, private val clickListener: (Entities.Schedule) -> Unit) :
+    RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
 
     private var schedules: List<Entities.Schedule> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
         val layoutInflater = LayoutInflater.from(context)
-        val binding: ItemScheduleBinding = DataBindingUtil.inflate(layoutInflater, R.layout.item_schedule, parent, false)
+        val binding: ItemScheduleBinding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.item_schedule, parent, false)
         return ScheduleViewHolder(binding)
     }
 
@@ -24,7 +26,7 @@ class ScheduleAdapter(private val context: Context) : RecyclerView.Adapter<Sched
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
-        holder.bind(schedules[position])
+        holder.bind(schedules[position], clickListener)
     }
 
     fun updateSchedules(schedules: List<Entities.Schedule>) {
@@ -33,8 +35,9 @@ class ScheduleAdapter(private val context: Context) : RecyclerView.Adapter<Sched
     }
 
     class ScheduleViewHolder(private val binding: ItemScheduleBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(schedule: Entities.Schedule) {
+        fun bind(schedule: Entities.Schedule, clickListener: (Entities.Schedule) -> Unit) {
             binding.schedule = schedule
+            binding.cardView.setOnClickListener { clickListener(schedule) }
             binding.executePendingBindings()
         }
     }
