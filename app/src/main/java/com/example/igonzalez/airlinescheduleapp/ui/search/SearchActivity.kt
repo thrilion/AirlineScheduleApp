@@ -2,8 +2,6 @@ package com.example.igonzalez.airlinescheduleapp.ui.search
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import com.example.igonzalez.airlinescheduleapp.R
 import com.example.igonzalez.airlinescheduleapp.ui.base.BaseActivity
 import com.example.igonzalez.airlinescheduleapp.ui.schedule.ScheduleActivity

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -38,7 +37,6 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule)
         binding.adapter = scheduleAdapter
         binding.layoutManager = LinearLayoutManager(this)
-        binding.dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
 
         val origin = intent.getStringExtra(INTENT_ORIGIN)
             ?: throw IllegalStateException("field $INTENT_ORIGIN missing in Intent")
