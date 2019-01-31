@@ -14,6 +14,12 @@ interface AirlineSchedulesApi {
         @Path("fromDateTime") fromDateTime: String
     ): Observable<Entities.ScheduleRequestResponse>
 
+    @GET("references/airports/{airportCode}")
+    fun getAirportInfo(
+        @Header("Authorization") token: String,
+        @Path("airportCode") airportCode: String
+    ): Observable<Entities.AirportResourceResponse>
+
     @FormUrlEncoded
     @POST("oauth/token")
     fun getAuthToken(@Field("client_id") clientId: String,
