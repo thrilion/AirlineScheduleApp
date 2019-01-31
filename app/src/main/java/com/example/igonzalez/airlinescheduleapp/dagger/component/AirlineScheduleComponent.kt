@@ -2,6 +2,7 @@ package com.example.igonzalez.airlinescheduleapp.dagger.component
 
 import com.example.igonzalez.airlinescheduleapp.dagger.module.ContextModule
 import com.example.igonzalez.airlinescheduleapp.dagger.module.NetworkModule
+import com.example.igonzalez.airlinescheduleapp.ui.map.MapPresenter
 import com.example.igonzalez.airlinescheduleapp.ui.schedule.SchedulePresenter
 import com.example.igonzalez.airlinescheduleapp.ui.search.SearchPresenter
 import dagger.Component
@@ -13,5 +14,6 @@ interface AirlineScheduleComponent {
 
     fun inject(searchPresenter: SearchPresenter)
     fun inject(schedulePresenter: SchedulePresenter)
+    fun inject(mapPresenter: MapPresenter)
 
 }

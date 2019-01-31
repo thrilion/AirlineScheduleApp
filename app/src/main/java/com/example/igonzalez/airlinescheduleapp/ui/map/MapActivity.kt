@@ -2,9 +2,11 @@ package com.example.igonzalez.airlinescheduleapp.ui.map
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.igonzalez.airlinescheduleapp.R
+import com.example.igonzalez.airlinescheduleapp.model.Entities
+import com.example.igonzalez.airlinescheduleapp.ui.base.BaseActivity
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -13,18 +15,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : BaseActivity<MapPresenter>(), MapView, OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
     companion object {
-        private const val INTENT_ORIGIN = "origin"
-        private const val INTENT_DESTINATION = "destination"
+        private const val INTENT_ORIGIN_AIRPORT = "originAirport"
+        private const val INTENT_DESTINATION_AIRPORT = "destinationAirport"
 
-        fun newIntent(context: Context, origin: String, destination: String): Intent {
+        fun newIntent(context: Context, originAirport: String, destinationAirport: String): Intent {
             val intent = Intent(context, MapActivity::class.java)
-            intent.putExtra(INTENT_ORIGIN, origin)
-            intent.putExtra(INTENT_DESTINATION, destination)
+            intent.putExtra(INTENT_ORIGIN_AIRPORT, originAirport)
+            intent.putExtra(INTENT_DESTINATION_AIRPORT, destinationAirport)
             return intent
         }
     }
@@ -32,10 +34,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        val origin = intent.getStringExtra(INTENT_ORIGIN_AIRPORT)
+            ?: throw IllegalStateException("field $INTENT_ORIGIN_AIRPORT missing in Intent")
+        val destination = intent.getStringExtra(INTENT_DESTINATION_AIRPORT)
+            ?: throw IllegalStateException("field $INTENT_DESTINATION_AIRPORT missing in Intent")
+        val sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        ) ?: return
+        val token = sharedPref.getString("API_ACCESS_TOKEN", "")
+
+        presenter.makeOriginAirportLocationRequest(token, origin)
+        presenter.makeDestinationAirportLocationRequest(token, destination)
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+    }
+
+    override fun setPresenter(): MapPresenter {
+        return MapPresenter(this)
     }
 
     /**
@@ -49,10 +67,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+    }
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    override fun showOriginAirport(originLocation: Entities.Coordinate) {
+        val originAirport = LatLng(originLocation.latitude, originLocation.longitude)
+        mMap.addMarker(MarkerOptions().position(originAirport).title("Origin Airport"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(originAirport))
+    }
+
+    override fun showDestinationAirport(destinationLocation: Entities.Coordinate) {
+        val destinationAirport = LatLng(destinationLocation.latitude, destinationLocation.longitude)
+        mMap.addMarker(MarkerOptions().position(destinationAirport).title("Destination Airport"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(destinationAirport))
+    }
+
+    override fun showError(error: String?) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.disposeSubscription()
     }
 }

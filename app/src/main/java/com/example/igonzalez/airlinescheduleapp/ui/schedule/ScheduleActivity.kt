@@ -35,9 +35,7 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule)
-        binding.adapter = scheduleAdapter
-        binding.layoutManager = LinearLayoutManager(this)
+        configView()
 
         val origin = intent.getStringExtra(INTENT_ORIGIN)
             ?: throw IllegalStateException("field $INTENT_ORIGIN missing in Intent")
@@ -45,7 +43,6 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
             ?: throw IllegalStateException("field $INTENT_DESTINATION missing in Intent")
         val fromDateTime = intent.getStringExtra(INTENT_FROM_DATE_TIME)
             ?: throw IllegalStateException("field $INTENT_FROM_DATE_TIME missing in Intent")
-
         val sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         ) ?: return
@@ -58,6 +55,12 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         return SchedulePresenter(this)
     }
 
+    private fun configView() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule)
+        binding.adapter = scheduleAdapter
+        binding.layoutManager = LinearLayoutManager(this)
+    }
+
     override fun showSchedules(schedules: List<Entities.Schedule>) {
         scheduleAdapter.updateSchedules(schedules)
     }
@@ -66,7 +69,7 @@ class ScheduleActivity : BaseActivity<SchedulePresenter>(), ScheduleView {
         val intent = MapActivity.newIntent(
             this,
             schedule.flight.departure.airportCode,
-            schedule.flight.departure.airportCode
+            schedule.flight.arrival.airportCode
         )
         startActivity(intent)
     }
