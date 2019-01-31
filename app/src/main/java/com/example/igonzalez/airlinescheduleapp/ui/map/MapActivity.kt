@@ -2,6 +2,7 @@ package com.example.igonzalez.airlinescheduleapp.ui.map
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import com.example.igonzalez.airlinescheduleapp.R
@@ -12,12 +13,14 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import java.util.*
 
 class MapActivity : BaseActivity<MapPresenter>(), MapView, OnMapReadyCallback {
 
-    private lateinit var mMap: GoogleMap
+    private lateinit var googleMap: GoogleMap
+    private lateinit var destinationAirport: LatLng
+    private lateinit var originAirport: LatLng
 
     companion object {
         private const val INTENT_ORIGIN_AIRPORT = "originAirport"
@@ -35,18 +38,6 @@ class MapActivity : BaseActivity<MapPresenter>(), MapView, OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        val origin = intent.getStringExtra(INTENT_ORIGIN_AIRPORT)
-            ?: throw IllegalStateException("field $INTENT_ORIGIN_AIRPORT missing in Intent")
-        val destination = intent.getStringExtra(INTENT_DESTINATION_AIRPORT)
-            ?: throw IllegalStateException("field $INTENT_DESTINATION_AIRPORT missing in Intent")
-        val sharedPref = this.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        ) ?: return
-        val token = sharedPref.getString("API_ACCESS_TOKEN", "")
-
-        presenter.makeOriginAirportLocationRequest(token, origin)
-        presenter.makeDestinationAirportLocationRequest(token, destination)
-
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -56,29 +47,69 @@ class MapActivity : BaseActivity<MapPresenter>(), MapView, OnMapReadyCallback {
         return MapPresenter(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        this.googleMap = googleMap
+        requestOriginAirport()
+    }
+
+    private fun requestOriginAirport() {
+        val origin = intent.getStringExtra(INTENT_ORIGIN_AIRPORT)
+            ?: throw IllegalStateException("field $INTENT_ORIGIN_AIRPORT missing in Intent")
+        val sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        ) ?: return
+        val token = sharedPref.getString("API_ACCESS_TOKEN", "")
+
+        presenter.makeOriginAirportLocationRequest(token, origin)
     }
 
     override fun showOriginAirport(originLocation: Entities.Coordinate) {
-        val originAirport = LatLng(originLocation.latitude, originLocation.longitude)
-        mMap.addMarker(MarkerOptions().position(originAirport).title("Origin Airport"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(originAirport))
+        originAirport = LatLng(originLocation.latitude, originLocation.longitude)
+        googleMap.addMarker(MarkerOptions().position(originAirport).title("Origin Airport"))
+
+        requestDestinationAirport()
+    }
+
+    private fun requestDestinationAirport() {
+        val destination = intent.getStringExtra(INTENT_DESTINATION_AIRPORT)
+            ?: throw IllegalStateException("field $INTENT_DESTINATION_AIRPORT missing in Intent")
+        val sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        ) ?: return
+        val token = sharedPref.getString("API_ACCESS_TOKEN", "")
+
+        presenter.makeDestinationAirportLocationRequest(token, destination)
     }
 
     override fun showDestinationAirport(destinationLocation: Entities.Coordinate) {
-        val destinationAirport = LatLng(destinationLocation.latitude, destinationLocation.longitude)
-        mMap.addMarker(MarkerOptions().position(destinationAirport).title("Destination Airport"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(destinationAirport))
+        destinationAirport = LatLng(destinationLocation.latitude, destinationLocation.longitude)
+        googleMap.addMarker(MarkerOptions().position(destinationAirport).title("Destination Airport"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(destinationAirport))
+
+        configGoogleMapsView()
+    }
+
+    private fun configGoogleMapsView() {
+        // polyline
+        val pattern = Arrays.asList(Dash(30f), Gap(20f))
+        googleMap.addPolyline(
+            PolylineOptions()
+                .add(originAirport, destinationAirport)
+                .width(5f)
+                .color(Color.RED)
+                .geodesic(true)
+                .pattern(pattern)
+        )
+
+        // camera
+        val bounds = LatLngBounds.Builder()
+            .include(originAirport)
+            .include(destinationAirport)
+            .build()
+        val padding = 150
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+        googleMap.moveCamera(cameraUpdate)
+        googleMap.animateCamera(cameraUpdate)
     }
 
     override fun showError(error: String?) {
