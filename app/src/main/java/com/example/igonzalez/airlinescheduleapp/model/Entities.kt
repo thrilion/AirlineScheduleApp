@@ -21,29 +21,20 @@ object Entities {
 
     data class Flight(
         @field:Json(name = "Departure") val departure: Departure,
-        @field:Json(name = "Arrival") val arrival: Arrival,
-        @field:Json(name = "Details") val details: Details
+        @field:Json(name = "Arrival") val arrival: Arrival
     )
 
     data class Departure(
         @field:Json(name = "AirportCode") val airportCode: String,
-        @field:Json(name = "ScheduledTimeLocal") val scheduledTimeLocal: ScheduledTimeLocal,
-        @field:Json(name = "Terminal") val terminal: Terminal
+        @field:Json(name = "ScheduledTimeLocal") val scheduledTimeLocal: ScheduledTimeLocal
     )
 
     data class Arrival(
         @field:Json(name = "AirportCode") val airportCode: String,
-        @field:Json(name = "ScheduledTimeLocal") val scheduledTimeLocal: ScheduledTimeLocal,
-        @field:Json(name = "Terminal") val terminal: Terminal
+        @field:Json(name = "ScheduledTimeLocal") val scheduledTimeLocal: ScheduledTimeLocal
     )
 
     data class ScheduledTimeLocal(@field:Json(name = "DateTime") val dateTime: String)
-
-    data class Terminal(@field:Json(name = "Name") val name: String)
-
-    data class Details(@field:Json(name = "Stops") val stops: Stops)
-
-    data class Stops(@field:Json(name = "StopQuantity") val stopQuantity: String)
 
     /*
     * AIRPORT REQUEST
