@@ -3,6 +3,8 @@
     <string name="preference_file_key">sharedPreferenceFileKey</string>
     <string name="origin">Origin</string>
     <string name="destination">Destination</string>
+    <string name="airport_search_hint1"><font size="15">Enter a 3-letter airport code (e.g. ZRH)</font></string>
+    <string name="airport_search_hint2"><font size="15">Enter a 3-letter airport code (e.g. FRA)</font></string>
     <string name="search">Search Flights</string>
     <string name="date">Date</string>
     <string name="title_activity_map">Map</string>
